@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Raccoon Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            max-width: 700px;
+        }
+        #question-box {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
+        .answer-option {
+            display: block;
+            margin: 10px 0;
+        }
+        .feedback {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .correct {
+            color: green;
+        }
+        .wrong {
+            color: red;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🦝 Raccoon Quiz</h1>
+
+<div id="question-box"></div>
+<button id="nextBtn" style="display:none;" onclick="loadNextQuestion()">Next</button>
+
+<h2 id="result"></h2>
+
+<script>
+// ------------------------------------------
+// QUESTIONS
+// ------------------------------------------
+const questions = [
+    {
+        q: "Where do raccoons live?",
+        answers: ["Deserts", "Forests", "Oceans"],
+        correct: 1
+    },
+    {
+        q: "What do raccoons eat?",
+        answers: ["Only plants", "Only meat", "Almost anything"],
+        correct: 2
+    },
+    {
+        q: "What do raccoons love to do?",
+        answers: ["Explore", "Hibernate", "Fly"],
+        correct: 0
+    },
+    {
+        q: "What is the dark fur around a raccoon’s eyes called?",
+        answers: ["Mask", "Helmet", "Glasses"],
+        correct: 0
+    },
+    {
+        q: "Are raccoons nocturnal or diurnal?",
+        answers: ["Diurnal", "Nocturnal", "Both"],
+        correct: 1
+    },
+    {
+        q: "What is a baby raccoon called?",
+        answers: ["Pup", "Kit", "Cub"],
+        correct: 1
+    },
+    {
+        q: "What is a group of raccoons called?",
+        answers: ["Pack", "Gaze", "Squad"],
+        correct: 1
+    },
+    {
+        q: "How many toes do raccoons have on each foot?",
+        answers: ["Four", "Five", "Six"],
+        correct: 1
+    },
+    {
+        q: "What sense are raccoons known for having great sensitivity in?",
+        answers: ["Touch", "Smell", "Hearing"],
+        correct: 0
+    },
+    {
+        q: "What do raccoons famously wash?",
+        answers: ["Stones", "Food", "Clothes"],
+        correct: 1
+    }
+];
+
+// ------------------------------------------
+// QUIZ LOGIC
+// ------------------------------------------
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+function showQuestion() {
+    answered = false;
+    document.getElementById("nextBtn").style.display = "none";
+
+    const q = questions[currentQuestion];
+    let html = `<h2>${currentQuestion + 1}. ${q.q}</h2>`;
+
+    q.answers.forEach((ans, i) => {
+        html += `
+            <label class="answer-option">
+                <input type="radio" name="answer" value="${i}" onclick="selectAnswer(${i})">
+                ${ans}
+            </label>
+        `;
+    });
+
+    html += `<p id="feedback" class="feedback"></p>`;
+
+    document.getElementById("question-box").innerHTML = html;
+}
+
+function selectAnswer(selectedIndex) {
+    if (answered) return; // prevents double answering
+    answered = true;
+
+    const q = questions[currentQuestion];
+    const feedback = document.getElementById("feedback");
+
+    if (selectedIndex === q.correct) {
+        feedback.innerHTML = `<span class="correct">✔ Correct!</span>`;
+        score++;
+    } else {
+        const correctText = q.answers[q.correct];
+        feedback.innerHTML = `<span class="wrong">✘ Wrong!</span><br>
+        The correct answer is: <strong>${correctText}</strong>`;
+    }
+
+    document.getElementById("nextBtn").style.display = "inline-block";
+}
+
+function loadNextQuestion() {
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+        showQuestion();
+    } else {
+        endQuiz();
+    }
+}
+
+function endQuiz() {
+    document.getElementById("question-box").innerHTML = "";
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("result").innerHTML =
+        `🎉 You scored <strong>${score}</strong> out of <strong>${questions.length}</strong>!`;
+}
+
+// Start quiz immediately
+showQuestion();
+</script>
+
+</body>
+</html>
